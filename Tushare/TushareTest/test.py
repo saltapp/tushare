@@ -28,7 +28,13 @@ end = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d")
 
 weekdata = ts.get_hist_data('000050', start, end, 'D', 3)
 
-print(weekdata)
+# print(weekdata['volume'])
+
+for x in range(1,len(weekdata['volume'])):
+    print(weekdata['volume'][x] - weekdata['volume'][x-1])
+    print('-----')
+
+
 
 # timestr = time.strptime(beforeweek, "%Y-%m_%d")
 
