@@ -21,21 +21,26 @@ pymysql.install_as_MySQLdb()
 # print(time.time())
 
 beforeweek = datetime.datetime.now() - datetime.timedelta(days = 7)
-
+ 
 start = datetime.datetime.strftime(beforeweek,"%Y-%m-%d")
-
+# 
 end = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d")
-
+ 
 weekdata = ts.get_hist_data('000050', start, end, 'D', 3)
-
-# print(weekdata['volume'])
-
+ 
+# # print(weekdata['volume'])
+# 
 for x in range(1,len(weekdata['volume'])):
     print(weekdata['volume'][x] - weekdata['volume'][x-1])
     print('-----')
-
-
-
+ 
+classifieds = ts.get_concept_classified();
+   
+# 
+engine = create_engine('mysql://root:96548521@127.0.0.1/tushare?charset=utf8')
+# 
+classifieds.to_sql('concept_classified',engine)
+ 
 # timestr = time.strptime(beforeweek, "%Y-%m_%d")
 
 
