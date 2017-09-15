@@ -14,14 +14,34 @@
 from sqlalchemy import create_engine
 import tushare as ts
 import pymysql
-from statsmodels.iolib.tests.test_table_econpy import cell0data
+import datetime
 pymysql.install_as_MySQLdb()
 
 
-df = ts.get_hist_data('000050', '2017-08-20', '2017-09-10', 'D', 3, 0)
+# print(time.time())
+
+beforeweek = datetime.datetime.now() - datetime.timedelta(days = 7)
+
+start = datetime.datetime.strftime(beforeweek,"%Y-%m-%d")
+
+end = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d")
+
+weekdata = ts.get_hist_data('000050', start, end, 'D', 3)
+
+print(weekdata)
+
+# timestr = time.strptime(beforeweek, "%Y-%m_%d")
+
+
+
+
+# df = ts.get_concept_classified()
+# df = ts.get_today_all()
+
+# print(df)
 #engine = create_engine('mysql://root:root@127.0.0.1/tushare?charset=utf8')
 
-print(df ['open'])
+# print(df)
 # engine = create_engine("mysql://root:root@127.0.0.1/tushare?charset=utf8")
 # 
 # df.to_sql('000050STM',engine)
