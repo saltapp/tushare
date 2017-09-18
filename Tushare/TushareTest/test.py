@@ -37,9 +37,11 @@ for x in range(1,len(weekdata['volume'])):
 classifieds = ts.get_concept_classified();
    
 # 
-engine = create_engine('mysql://root:96548521@127.0.0.1/tushare?charset=utf8')
-# 
-classifieds.to_sql('concept_classified',engine)
+# engine = create_engine('mysql://root:96548521@127.0.0.1/tushare?charset=utf8')
+# # 
+# classifieds.to_sql('concept_classified',engine)
+ 
+ 
  
 # timestr = time.strptime(beforeweek, "%Y-%m_%d")
 
