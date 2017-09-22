@@ -1,3 +1,8 @@
+
+# coding: utf-8
+
+# In[5]:
+
 # from sklearn import svm
 # 
 # x = [[1,1],[2,3]]
@@ -30,7 +35,6 @@ weekdata = ts.get_hist_data('000050', start, end, '5', 3)
  
 # # print(weekdata['volume'])
 # 
-for x in range(1,len(weekdata['volume'])):
 # for x in range(1,len(weekdata['volume'])):
 #     print(weekdata['volume'][x] - weekdata['volume'][x-1])
 #     print('-----')
@@ -38,10 +42,6 @@ for x in range(1,len(weekdata['volume'])):
 # classifieds = ts.get_concept_classified();
 print(weekdata)
 # 
-engine = create_engine('mysql://root:root@127.0.0.1/tushare?charset=utf8')
-# # 
-weekdata.to_sql('SC000050',engine)
-
 
  
  
@@ -61,3 +61,28 @@ weekdata.to_sql('SC000050',engine)
 # engine = create_engine("mysql://root:root@127.0.0.1/tushare?charset=utf8")
 # 
 # df.to_sql('000050STM',engine)
+
+
+# In[11]:
+
+engine = create_engine('mysql://root:96548521@127.0.0.1/tushare?charset=utf8')
+# # 
+# weekdata.to_sql('SC000050',engine)
+
+weekdata.to_sql('SC000050', engine, None, None, 'append', True, 'date', None, None)
+
+
+# In[12]:
+
+weekdata[:]
+
+
+# In[17]:
+
+weekdata.loc[:,['close','volume']].T
+
+
+# In[ ]:
+
+
+
