@@ -18,10 +18,12 @@ start = datetime.datetime.strftime(beforeweek,"%Y-%m-%d")
 # 
 end = datetime.datetime.strftime(datetime.datetime.now(), "%Y-%m-%d")
  
-weekdata = ts.get_hist_data('000050', start, end, 'D', 3)
+weekdata = ts.get_hist_data('000050', start, end, '5', 3)
 
-print(weekdata['close'])
+# print(weekdata['close'])
+# 
+# weekdata['close'].plot(grid=True, figsize=(8,5))
+# 
+# plt.show()
 
-weekdata['close'].plot(grid=True, figsize=(8,5))
-
-plt.show()
+print(weekdata.T)
