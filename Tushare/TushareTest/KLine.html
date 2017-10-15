@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>ECharts</title>
+    <!-- 引入 echarts.js -->
+    <script src="echarts.min.js"></script>
+    <script src="jquery-3.2.1.js"></script>
+</head>
+<body>
+    <!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+    <div id="main" style="width: 100%;height:800px;"></div>
+    <script type="text/javascript">
+        var rawData = [["2017-10-09 10:00:00", 22.86, 23.08, 22.61, 23.24, 98043.1],["2017-10-09 10:30:00", 23.08, 23.47, 23.0, 23.49, 99811.8],["2017-10-09 11:00:00", 23.47, 23.46, 23.38, 23.65, 78946.1],["2017-10-09 11:30:00", 23.47, 23.64, 23.42, 23.64, 32454.5],["2017-10-09 13:30:00", 23.64, 24.02, 23.62, 24.17, 148580.0],["2017-10-09 14:00:00", 24.0, 23.71, 23.71, 24.02, 40736.4],["2017-10-09 14:30:00", 23.71, 23.63, 23.55, 23.89, 31165.5],["2017-10-09 15:00:00", 23.63, 23.6, 23.58, 23.67, 30788.5],["2017-10-10 10:00:00", 23.65, 23.8, 23.52, 24.05, 98990.1],["2017-10-10 10:30:00", 23.8, 23.61, 23.51, 23.81, 53096.8],["2017-10-10 11:00:00", 23.63, 23.8, 23.4, 23.88, 60261.4],["2017-10-10 11:30:00", 23.8, 23.7, 23.68, 23.91, 32904.0],["2017-10-10 13:30:00", 23.7, 23.98, 23.7, 24.09, 87543.6],["2017-10-10 14:00:00", 23.98, 23.95, 23.91, 24.03, 48259.5],["2017-10-10 14:30:00", 23.95, 23.86, 23.83, 24.03, 38715.3],["2017-10-10 15:00:00", 23.88, 23.88, 23.78, 23.93, 44950.2],["2017-10-11 10:00:00", 23.93, 23.68, 23.55, 23.96, 70999.1],["2017-10-11 10:30:00", 23.68, 23.48, 23.37, 23.76, 72902.8],["2017-10-11 11:00:00", 23.5, 23.33, 23.26, 23.51, 56282.3],["2017-10-11 11:30:00", 23.35, 23.4, 23.24, 23.46, 41582.8],["2017-10-11 13:30:00", 23.4, 23.5, 23.33, 23.65, 30731.0],["2017-10-11 14:00:00", 23.5, 23.65, 23.41, 23.65, 26724.1],["2017-10-11 14:30:00", 23.62, 23.4, 23.4, 23.63, 24091.6],["2017-10-11 15:00:00", 23.4, 23.3, 23.24, 23.46, 41895.8],["2017-10-12 10:00:00", 23.7, 23.76, 23.42, 23.96, 92582.8],["2017-10-12 10:30:00", 23.77, 24.12, 23.68, 24.19, 131072.0],["2017-10-12 11:00:00", 24.11, 24.21, 23.98, 24.26, 114433.0],["2017-10-12 11:30:00", 24.2, 24.22, 24.16, 24.4, 102616.0],["2017-10-12 13:30:00", 24.23, 24.24, 24.17, 24.3, 33626.0],["2017-10-12 14:00:00", 24.24, 24.01, 23.99, 24.24, 42015.6],["2017-10-12 14:30:00", 24.01, 23.93, 23.76, 24.03, 41412.4],["2017-10-12 15:00:00", 23.93, 23.92, 23.85, 23.95, 34124.2],["2017-10-13 10:00:00", 23.82, 23.61, 23.56, 24.07, 100496.0],["2017-10-13 10:30:00", 23.61, 23.71, 23.55, 23.75, 40445.4],["2017-10-13 11:00:00", 23.71, 23.84, 23.6, 23.91, 22563.0],["2017-10-13 11:30:00", 23.83, 24.19, 23.81, 24.2, 61558.9],["2017-10-13 13:30:00", 24.21, 24.11, 24.09, 24.33, 48150.0],["2017-10-13 14:00:00", 24.12, 24.7, 24.12, 24.74, 155935.0],["2017-10-13 14:30:00", 24.71, 24.56, 24.53, 24.78, 67887.8],["2017-10-13 15:00:00", 24.56, 24.93, 24.53, 24.93, 102916.0]]
+        function splitData(rawData) {
+            var categoryData = [];
+            var values = [];
+            var volumns = [];
+            for (var i = 0; i < rawData.length; i++) {
+                categoryData.push(rawData[i].splice(0, 1)[0]);
+                values.push(rawData[i]);
+                volumns.push(rawData[i][4]);
+            }
+            return {
+                categoryData: categoryData,
+                values: values,
+                volumns: volumns
+            };
+        }
+
+        function calculateMA(dayCount, data) {
+            var result = [];
+            for (var i = 0, len = data.values.length; i < len; i++) {
+                if (i < dayCount) {
+                    result.push('-');
+                    continue;
+                }
+                var sum = 0;
+                for (var j = 0; j < dayCount; j++) {
+                    sum += data.values[i - j][1];
+                }
+                result.push(+(sum / dayCount).toFixed(3));
+            }
+            return result;
+        }
+
+        // $.get('./stock-DJI.json', function (rawData) {
+
+            /*data ={
+                        categoryData: Array[3141], 
+                        values: Array[3141],
+                        *values Item sample:  [10452.74,10409.85,10367.41,10554.96,168890000]
+                        volumns: Array[3141]
+                    }
+            */
+            var data = splitData(rawData);
+            var myChart = echarts.init(document.getElementById('main'));
+            myChart.setOption(
+            option = {
+                backgroundColor: '#eee',
+                animation: false,
+                legend: {
+                    bottom: 10,
+                    left: 'center',
+                    data: ['China Stock index', 'MA5', 'MA10', 'MA20', 'MA30']
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'cross'
+                    },
+                    backgroundColor: 'rgba(245, 245, 245, 0.8)',
+                    borderWidth: 1,
+                    borderColor: '#ccc',
+                    padding: 10,
+                    textStyle: {
+                        color: '#000'
+                    },
+                    position: function (pos, params, el, elRect, size) {
+                        var obj = {top: 10};
+                        obj[['left', 'right'][+(pos[0] < size.viewSize[0] / 2)]] = 30;
+                        return obj;
+                    },
+                    extraCssText: 'width: 170px'
+                },
+                axisPointer: {
+                    link: {xAxisIndex: 'all'},
+                    label: {
+                        backgroundColor: '#777'
+                    }
+                },
+                toolbox: {
+                    feature: {
+                        dataZoom: {
+                            yAxisIndex: false
+                        },
+                        brush: {
+                            type: ['lineX', 'clear']
+                        }
+                    }
+                },
+                brush: {
+                    xAxisIndex: 'all',
+                    brushLink: 'all',
+                    outOfBrush: {
+                        colorAlpha: 0.1
+                    }
+                },
+                grid: [
+                    {
+                        left: '10%',
+                        right: '8%',
+                        height: '50%'
+                    },
+                    {
+                        left: '10%',
+                        right: '8%',
+                        bottom: '20%',
+                        height: '15%'
+                    }
+                ],
+                xAxis: [
+                    {
+                        type: 'category',
+                        data: data.categoryData,
+                        scale: true,
+                        boundaryGap : false,
+                        axisLine: {onZero: false},
+                        splitLine: {show: false},
+                        splitNumber: 20,
+                        min: 'dataMin',
+                        max: 'dataMax',
+                        axisPointer: {
+                            z: 100
+                        }
+                    },
+                    {
+                        type: 'category',
+                        gridIndex: 1,
+                        data: data.categoryData,
+                        scale: true,
+                        boundaryGap : false,
+                        axisLine: {onZero: true},
+                        axisTick: {show: false},
+                        splitLine: {show: false},
+                        axisLabel: {show: false},
+                        splitNumber: 20,
+                        min: 'dataMin',
+                        max: 'dataMax',
+                        axisPointer: {
+                            label: {
+                                formatter: function (params) {
+                                    var seriesValue = (params.seriesData[0] || {}).value;
+                                    return params.value
+                                    + (seriesValue != null
+                                        ? '\n' + echarts.format.addCommas(seriesValue)
+                                        : ''
+                                    );
+                                }
+                            }
+                        }
+                    }
+                ],
+                yAxis: [
+                    {
+                        scale: true,
+                        splitArea: {
+                            show: true
+                        }
+                    },
+                    {
+                        scale: true,
+                        gridIndex: 1,
+                        splitNumber: 2,
+                        axisLabel: {show: false},
+                        axisLine: {show: false},
+                        axisTick: {show: false},
+                        splitLine: {show: false}
+                    }
+                ],
+                dataZoom: [
+                    {
+                        type: 'inside',
+                        xAxisIndex: [0, 1],
+                        start: 0,
+                        end: 100
+                    },
+                    {
+                        show: true,
+                        xAxisIndex: [0, 1],
+                        type: 'slider',
+                        top: '85%',
+                        start: 0,
+                        end: 100
+                    }
+                ],
+                series: [
+                    {
+                        name: 'Dow-Jones index',
+                        type: 'candlestick',
+                        data: data.values,
+                        itemStyle: {
+                            normal: {
+                                color: '#06B800',
+                                color0: '#FA0000',
+                                borderColor: null,
+                                borderColor0: null
+                            }
+                        },
+                        tooltip: {
+                            formatter: function (param) {
+                                param = param[0];
+                                // return [
+                                //     //["2017-10-09 10:00:00", 22.86, 23.08, 22.61, 23.24]
+                                //     'Date: ' + param.name + '<hr size=1 style="margin: 3px 0">',
+                                //     'Open: ' + param.data[0] + '<br/>',
+                                //     'Close: ' + param.data[2] + '<br/>',
+                                //     'Lowest: ' + param.data[3] + '<br/>',
+                                //     'Highest: ' + param.data[1] + '<br/>'
+                                // ].join('');
+                            }
+                        }
+                    },
+                    {
+                        name: 'MA5',
+                        type: 'line',
+                        data: calculateMA(5, data),
+                        smooth: true,
+                        lineStyle: {
+                            normal: {opacity: 0.5}
+                        }
+                    },
+                    {
+                        name: 'MA10',
+                        type: 'line',
+                        data: calculateMA(10, data),
+                        smooth: true,
+                        lineStyle: {
+                            normal: {opacity: 0.5}
+                        }
+                    },
+                    {
+                        name: 'MA20',
+                        type: 'line',
+                        data: calculateMA(20, data),
+                        smooth: true,
+                        lineStyle: {
+                            normal: {opacity: 0.5}
+                        }
+                    },
+                    {
+                        name: 'MA30',
+                        type: 'line',
+                        data: calculateMA(30, data),
+                        smooth: true,
+                        lineStyle: {
+                            normal: {opacity: 0.5}
+                        }
+                    },
+                    {
+                        name: 'Volumn',
+                        type: 'bar',
+                        xAxisIndex: 1,
+                        yAxisIndex: 1,
+                        data: data.volumns
+                    }
+                ]
+            }, true);
+        // });
+    </script>
+</body>
+</html>

@@ -36,7 +36,6 @@ for x in range(1,len(weekdata['volume'])):
 #     print('-----')
 #  
 # classifieds = ts.get_concept_classified();
-print(weekdata)
 # 
 engine = create_engine('mysql://root:root@127.0.0.1/tushare?charset=utf8')
 # # 
